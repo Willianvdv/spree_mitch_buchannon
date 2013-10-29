@@ -26,7 +26,6 @@ describe Spree::Order do
         expect(subject).not_to include(@paid_order)
       end
 
-
       # Refactor: Think of a nicer way to do these tests. I want
       # to test if the .payment_reminder_candidates filters out orders
       # older than 1 day and younger than 1 hour
