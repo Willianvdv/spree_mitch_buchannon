@@ -1,6 +1,32 @@
 require 'spec_helper'
+#require 'email_spec'
 
 describe Spree::Order do
+
+  describe '.send_payment_reminder_email' do
+    let(:order) { create :order }
+
+    let!(:mail_message) {
+      mail_message = double "Mail::Message"
+      mail_message.stub(:deliver!)
+      mail_message
+    }
+
+    before :each do
+      Spree::PaymentReminderMailer.stub(:payment_reminder_email).and_return mail_message
+    end
+
+    it 'updates the payment reminder sent at' do
+      order.send_payment_reminder_email 
+      expect(order.payment_reminder_sent_at).not_to be_nil
+    end
+
+    it 'sends the payment reminder email' do
+      mail_message.should_receive(:deliver!).once
+      order.send_payment_reminder_email 
+    end
+  end
+
   describe '#payment_reminder_candidates' do
     subject { Spree::Order.payment_reminder_candidates }
 
@@ -26,9 +52,9 @@ describe Spree::Order do
         expect(subject).not_to include(@paid_order)
       end
 
-      # Refactor: Think of a nicer way to do these tests. I want
+      # todo: Think of a nicer way to do these tests. I want
       # to test if the .payment_reminder_candidates filters out orders
-      # older than 1 day and younger than 1 hour
+      # that are older than 1 hour and younger than 1 day
       describe 'a order completed a second ago' do
         before :each do
           @completed_order.completed_at = 1.second.ago

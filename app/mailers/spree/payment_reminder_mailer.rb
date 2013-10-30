@@ -1,11 +1,9 @@
 class Spree::PaymentReminderMailer < ActionMailer::Base
-  layout 'spree/layouts/email'
-
-  def payment_reminder_mail(order, mail)
+    def payment_reminder_email(order)
     @order = order
     
-    mail(to: mail, subject: 'payment reminder') do |format|
+    mail(to: @order.email, subject: 'payment reminder') do |format|
       format.html
     end
   end
-end
+end 
