@@ -9,9 +9,29 @@ The Spree Mitch Bucannon modules saves orders. It's looking for unpaid orders an
 
 ## Installation
 
-Add spree_mitch_bucannon to your Gemfile
+1) Add spree_mitch_bucannon to your Gemfile
 
-`gem 'spree_mitch_bucannon', github: 'Willianvdv/spree_mitch_bucannon'`
+```
+gem 'spree_mitch_bucannon', github: 'Willianvdv/spree_mitch_bucannon'
+```
+
+2) Bundle it
+
+```
+$ bundle install
+```
+
+3) Install the migrations
+
+```
+$ bundle exec rake railties:install:migrations FROM=spree_wishlist
+```
+
+4) Migrate
+
+```
+$ bundle exec rake db:migrate
+```
 
 
 ## Usage
