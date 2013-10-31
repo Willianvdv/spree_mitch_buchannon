@@ -2,6 +2,13 @@ require 'spec_helper'
 #require 'email_spec'
 
 describe Spree::Order do
+  let!(:mail_message) {
+    mail_message = double "Mail::Message"
+    mail_message.stub(:deliver!)
+    mail_message.stub(:deliver)
+    mail_message
+  }
+
   describe '.send_payment_reminder_emails_to_unpaid_orders' do
     let!(:order) { create :order }
   
@@ -18,12 +25,6 @@ describe Spree::Order do
 
   describe '.send_payment_reminder_email' do
     let(:order) { create :order }
-
-    let!(:mail_message) {
-      mail_message = double "Mail::Message"
-      mail_message.stub(:deliver!)
-      mail_message
-    }
 
     before :each do
       Spree::PaymentReminderMailer.stub(:payment_reminder_email).and_return mail_message
@@ -67,6 +68,22 @@ describe Spree::Order do
 
     it 'returns unpaid completed orders older than 2 days' do
       expect(subject).to eq([completed_order])
+    end
+  end
+
+  describe '#cancel_cancellation_candidates' do
+    let!(:completed_order) {
+      order = create :completed_order_with_totals
+      order.completed_at = 3.days.ago
+      order.save!
+      order
+    }
+
+    it 'cancels the cancellation candidates' do
+      Spree::OrderMailer.stub(:cancel_email).and_return mail_message
+      Spree::Order.cancel_cancellation_candidates
+      completed_order.reload
+      expect(completed_order.state).to eq('canceled')
     end
   end
 

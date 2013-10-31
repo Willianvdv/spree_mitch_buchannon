@@ -15,6 +15,12 @@ Spree::Order.class_eval do
     message.deliver!
   end
 
+  def self.cancel_cancellation_candidates
+    cancellation_candidates.each do |cancellation_candidate|
+      cancellation_candidate.cancel!
+    end
+  end
+
   # todo: don't think this method should be on the model
   def self.send_payment_reminder_emails_to_unpaid_orders
     payment_reminder_candidates.each do |payment_reminder_candidate|
