@@ -40,6 +40,30 @@ describe Spree::Order do
     end
   end
 
+  describe '#cancellation_candidates' do
+    let!(:completed_paid_order) {
+      order = create :completed_order_with_totals        
+      order.completed_at = 3.days.ago
+      order.payment_state = 'paid'
+      order.save!
+      order
+    }
+    
+    let!(:completed_order) {
+      order = create :completed_order_with_totals
+      order.completed_at = 3.days.ago
+      order.save!
+      order
+    }
+
+    subject { Spree::Order.cancellation_candidates }
+
+    it 'returns unpaid completed orders older than 2 days' do
+      expect(subject).to eq([completed_order])
+    end
+
+  end
+
   describe '#payment_reminder_candidates' do
     subject { Spree::Order.payment_reminder_candidates }
 

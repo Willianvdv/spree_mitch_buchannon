@@ -5,6 +5,10 @@ Spree::Order.class_eval do
       .where(completed_at: 1.days.ago..1.hour.ago)
   end
 
+  def self.cancellation_candidates 
+    self.complete.where("payment_state != 'paid'")
+  end
+
   def send_payment_reminder_email
     touch(:payment_reminder_sent_at)
     message = Spree::PaymentReminderMailer.payment_reminder_email(self)
