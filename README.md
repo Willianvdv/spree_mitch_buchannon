@@ -6,6 +6,9 @@ No lifeguard on duty! Work in progress!
 
 The Spree Mitch Bucannon modules saves orders. It's looking for unpaid orders and rescues them by sending a payment reminder to the customer. It also keeps the ~~sea~~ backend clean by canceling unpaid orders after x days.
 
+## Compatiblity
+
+I've created this gem for a Spree 1.3 store. But I will add support for 2.x stores soon!
 
 ## Installation
 
