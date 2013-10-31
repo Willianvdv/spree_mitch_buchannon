@@ -1,4 +1,4 @@
-module SpreeMitchbuchannon
+module SpreeMitchBuchannon
   module Generators
     class InstallGenerator < Rails::Generators::Base
 

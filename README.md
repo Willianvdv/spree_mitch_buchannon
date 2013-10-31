@@ -2,9 +2,9 @@ No lifeguard on duty! Work in progress!
 ---
 ---
 
-# Spree Mitch buchannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_buchannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_buchannon)
+# Spree Mitch Buchannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_buchannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_buchannon)
 
-The Spree Mitch buchannon modules saves orders. It's looking for unpaid orders and rescues them by sending a payment reminder to the customer. It also keeps the ~~sea~~ backend clean by canceling unpaid orders after x days.
+The Spree Mitch Buchannon modules saves orders. It's looking for unpaid orders and rescues them by sending a payment reminder to the customer. It also keeps the ~~sea~~ backend clean by canceling unpaid orders after x days.
 
 ## Compatiblity
 

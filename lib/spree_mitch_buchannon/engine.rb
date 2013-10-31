@@ -1,4 +1,4 @@
-module SpreeMitchbuchannon
+module SpreeMitchBuchannon
   class Engine < Rails::Engine
     require 'spree/core'
     isolate_namespace Spree
