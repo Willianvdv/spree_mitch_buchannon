@@ -2,6 +2,19 @@ require 'spec_helper'
 #require 'email_spec'
 
 describe Spree::Order do
+  describe '.send_payment_reminder_emails_to_unpaid_orders' do
+    let!(:order) { create :order }
+  
+    before :each do
+      Spree::Order.stub(:payment_reminder_candidates).and_return [order,]
+      order.stub(:send_payment_reminder_email)
+    end
+
+    it 'sends the payment_reminder_email to all payment reminder candiates' do
+      order.should_receive(:send_payment_reminder_email).once
+      Spree::Order.send_payment_reminder_emails_to_unpaid_orders
+    end
+  end
 
   describe '.send_payment_reminder_email' do
     let(:order) { create :order }
