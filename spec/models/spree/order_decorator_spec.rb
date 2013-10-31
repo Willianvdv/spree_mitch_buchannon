@@ -9,6 +9,34 @@ describe Spree::Order do
     mail_message
   }
 
+  let(:order) { create :order }
+
+  describe '.after_cancel' do
+    context 'new order' do
+      before :each do
+        order.completed_at = 1.day.ago
+        order.save!
+      end
+
+      it 'should sent a cancel email' do
+        Spree::OrderMailer.should_receive(:cancel_email).once.and_return mail_message
+        order.cancel!
+      end
+    end
+    
+    context '6 weeks old order' do
+      before :each do
+        order.completed_at = 6.weeks.ago
+        order.save!
+      end
+
+      it 'should not sent a cancel email' do
+        Spree::OrderMailer.should_receive(:cancel_email).never
+        order.cancel!
+      end
+    end
+  end
+
   describe '.send_payment_reminder_emails_to_unpaid_orders' do
     let!(:order) { create :order }
   
@@ -24,8 +52,6 @@ describe Spree::Order do
   end
 
   describe '.send_payment_reminder_email' do
-    let(:order) { create :order }
-
     before :each do
       Spree::PaymentReminderMailer.stub(:payment_reminder_email).and_return mail_message
     end
@@ -72,18 +98,20 @@ describe Spree::Order do
   end
 
   describe '#cancel_cancellation_candidates' do
-    let!(:completed_order) {
-      order = create :completed_order_with_totals
-      order.completed_at = 3.days.ago
-      order.save!
-      order
-    }
+    context 'order is fairly new' do
+      let!(:completed_order) {
+        order = create :completed_order_with_totals
+        order.completed_at = 3.days.ago
+        order.save!
+        order
+      }
 
-    it 'cancels the cancellation candidates' do
-      Spree::OrderMailer.stub(:cancel_email).and_return mail_message
-      Spree::Order.cancel_cancellation_candidates
-      completed_order.reload
-      expect(completed_order.state).to eq('canceled')
+      it 'cancels the cancellation candidates' do
+        Spree::OrderMailer.stub(:cancel_email).and_return mail_message
+        Spree::Order.cancel_cancellation_candidates
+        completed_order.reload
+        expect(completed_order.state).to eq('canceled')
+      end
     end
   end
 
