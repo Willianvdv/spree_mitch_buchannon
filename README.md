@@ -8,7 +8,7 @@ The Spree Mitch Buchannon modules saves orders. It's looking for unpaid orders a
 
 ## Compatiblity
 
-I've created this gem for a Spree 1.3 store. But I will add support for 2.x stores soon!
+I've created this gem for a Spree 1.2.4 store. But I will add support for 2.x stores soon!
 
 ## Installation
 
