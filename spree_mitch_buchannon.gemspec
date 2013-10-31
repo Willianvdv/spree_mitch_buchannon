@@ -8,14 +8,11 @@ Gem::Specification.new do |s|
 
   s.author    = 'Willian van der Velde'
   s.email     = 'willian@pythonheads.nl'
-  # s.homepage  = 'http://www.spreecommerce.com'
-
-  #s.files       = `git ls-files`.split("\n")
-  #s.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
+  
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', '~> 1.2.4'
+  s.add_dependency 'spree_core', '~> 1.3'
 
   s.add_development_dependency 'capybara', '1.0.1'
   s.add_development_dependency 'factory_girl', '~> 2.6.4'
