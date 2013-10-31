@@ -27,7 +27,7 @@ $ bundle install
 3) Install the migrations
 
 ```
-$ bundle exec rake railties:install:migrations FROM=spree_wishlist
+$ bundle exec rake railties:install:migrations FROM=spree_mitch_buchannon
 ```
 
 4) Migrate
