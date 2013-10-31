@@ -2,9 +2,9 @@ No lifeguard on duty! Work in progress!
 ---
 ---
 
-# Spree Mitch Bucannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_bucannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_bucannon)
+# Spree Mitch buchannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_buchannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_buchannon)
 
-The Spree Mitch Bucannon modules saves orders. It's looking for unpaid orders and rescues them by sending a payment reminder to the customer. It also keeps the ~~sea~~ backend clean by canceling unpaid orders after x days.
+The Spree Mitch buchannon modules saves orders. It's looking for unpaid orders and rescues them by sending a payment reminder to the customer. It also keeps the ~~sea~~ backend clean by canceling unpaid orders after x days.
 
 ## Compatiblity
 
@@ -12,10 +12,10 @@ I've created this gem for a Spree 1.3 store. But I will add support for 2.x stor
 
 ## Installation
 
-1) Add spree_mitch_bucannon to your Gemfile
+1) Add spree_mitch_buchannon to your Gemfile
 
 ```
-gem 'spree_mitch_bucannon', github: 'Willianvdv/spree_mitch_bucannon'
+gem 'spree_mitch_buchannon', github: 'Willianvdv/spree_mitch_buchannon'
 ```
 
 2) Bundle it

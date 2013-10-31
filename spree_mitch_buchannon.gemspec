@@ -1,7 +1,7 @@
 # encoding: UTF-8
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
-  s.name        = 'spree_mitch_bucannon'
+  s.name        = 'spree_mitch_buchannon'
   s.version     = '1.2.4'
   s.summary     = 'Saves orders by sending a reminder mail to the customer'
   s.required_ruby_version = '>= 1.8.7'

@@ -1,8 +1,8 @@
-module SpreeMitchBucannon
+module SpreeMitchbuchannon
   class Engine < Rails::Engine
     require 'spree/core'
     isolate_namespace Spree
-    engine_name 'spree_mitch_bucannon'
+    engine_name 'spree_mitch_buchannon'
 
     config.autoload_paths += %W(#{config.root}/lib)
 
