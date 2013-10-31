@@ -3,3 +3,6 @@
 
 en:
   hello: "Hello world"
+  payment_reminder:
+    payment_reminder_email:
+      subject: "Payment reminder"
