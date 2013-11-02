@@ -17,5 +17,13 @@ describe Spree::PaymentReminderMailer do
     it 'should have the customers email' do
       expect(subject.to).to eq([order.email])
     end
+
+    it 'body should say dear customer' do
+      expect(subject.body).to include('Dear Customer')
+    end
+
+    it 'subject contains the payment instructions' do
+      expect(subject.body).to include('Your order has been placed but was not paid for.')
+    end
   end
 end

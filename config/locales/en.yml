@@ -2,7 +2,9 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
   payment_reminder:
     payment_reminder_email:
-      subject: "Payment reminder"
+      subject: Payment reminder
+      dear_customer: Dear Customer,
+      instructions: Your order has been placed but was not paid for.
+
