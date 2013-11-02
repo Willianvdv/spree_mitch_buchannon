@@ -1,10 +1,6 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
   payment_reminder:
     payment_reminder_email:
       subject: Payment reminder
       dear_customer: Dear Customer,
-      instructions: Your order has been placed but was not paid for.
-
+      instructions: Your order has been placed but was not paid for. Please pay so we can process your order!
