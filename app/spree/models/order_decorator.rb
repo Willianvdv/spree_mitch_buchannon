@@ -1,8 +1,14 @@
 Spree::Order.class_eval do
   def self.payment_reminder_candidates
     self.complete
+      .select('(select count(*) from spree_orders as SO ' +
+              'where SO.user_id == spree_orders.user_id and '+
+              'SO.id != spree_orders.id and ' +
+              'SO.completed_at > spree_orders.completed_at) as future_orders, ' +
+              '*')
       .where('payment_reminder_sent_at is null')
       .where(completed_at: 1.days.ago..1.hour.ago)
+      .where('future_orders == 0')
   end
 
   def self.cancellation_candidates 

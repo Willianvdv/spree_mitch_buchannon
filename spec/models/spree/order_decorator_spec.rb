@@ -164,6 +164,21 @@ describe Spree::Order do
           expect(subject).to eq([])
         end
       end
+
+      describe 'user placed another order' do
+        before :each do
+          @new_order = create :order, user: order.user
+          @new_order.completed_at = 2.minutes.ago
+          @new_order.save
+
+          @completed_order.completed_at = 7.days.ago
+          @completed_order.save
+        end
+
+        it 'should not send a payment reminder' do
+          expect(subject).to eq([])
+        end
+      end
     end
 
     describe 'reminder already sent' do
