@@ -54,9 +54,6 @@ I recommend using [whenever](https://github.com/javan/whenever). Follow their in
 ```
 every :hour do
   rake "mitch:send_reminder_emails"
-end
-
-every :hour do
   rake "mitch:cancel_unpaid_orders"
 end
 ```
