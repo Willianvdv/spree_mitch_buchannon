@@ -1,8 +1,4 @@
-No lifeguard on duty! Work in progress! 
----
----
-
-# Spree Mitch Buchannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_buchannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_buchannon)
+# Spree Mitch Buchannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_buchannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_buchannon)[![Coverage Status](https://coveralls.io/repos/Willianvdv/spree_mitch_buchannon/badge.png?branch=master)](https://coveralls.io/r/Willianvdv/spree_mitch_buchannon?branch=master)
 
 The Spree Mitch Buchannon modules saves orders. It's looking for unpaid orders and rescues them by sending a payment reminder to the customer. It also keeps the ~~sea~~ backend clean by canceling unpaid orders after x days.
 
