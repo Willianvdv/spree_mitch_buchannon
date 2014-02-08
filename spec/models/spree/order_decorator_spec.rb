@@ -9,7 +9,7 @@ describe Spree::Order do
     mail_message
   }
 
-  let(:order) { create :order }
+  let(:order) { create :completed_order_with_totals }
 
   describe '.after_cancel' do
     context 'new order' do
@@ -79,6 +79,7 @@ describe Spree::Order do
     let!(:completed_order) {
       order = create :completed_order_with_totals
       order.completed_at = 3.days.ago
+      order.payment_state = 'pending'
       order.save!
       order
     }
@@ -102,6 +103,7 @@ describe Spree::Order do
       let!(:completed_order) {
         order = create :completed_order_with_totals
         order.completed_at = 3.days.ago
+        order.payment_state = 'pending'
         order.save!
         order
       }

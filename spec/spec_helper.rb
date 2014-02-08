@@ -20,6 +20,7 @@ require File.expand_path('../dummy/config/environment.rb',  __FILE__)
 
 require 'rspec/rails'
 require 'ffaker'
+require 'database_cleaner'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -71,4 +72,23 @@ RSpec.configure do |config|
   config.include Spree::TestingSupport::ControllerRequests
   
   config.fail_fast = ENV['FAIL_FAST'] || false
+
+  # Ensure Suite is set to use transactions for speed.
+  config.before :suite do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with :truncation
+  end
+
+  # Before each spec check if it is a Javascript test and switch between using database transactions or not where necessary.
+  config.before :each do
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    DatabaseCleaner.start
+    Spree::Config.products_per_page = 25
+
+  end
+
+  # After each spec clean the database.
+  config.after :each do
+    DatabaseCleaner.clean
+  end
 end
