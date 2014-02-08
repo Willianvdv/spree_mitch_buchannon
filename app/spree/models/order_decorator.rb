@@ -36,21 +36,12 @@ Spree::Order.class_eval do
     end
   end
 
-  # Almost identical to the original after_cancel except
-  # the original will send cancel_emails for old orders
-  def after_cancel
-    restock_items!
-    #TODO: make_shipments_pending
-
-    # Addition: Don't send if order is older than 30 days
+  # Override!
+  def send_cancel_email
     if completed_at > 30.days.ago
       Spree::OrderMailer.cancel_email(self.id).deliver
     else
       Rails.logger.info "Won't send cancel email because order is older than 30 days"
-    end
-
-    unless %w(partial shipped).include?(shipment_state)
-      self.payment_state = 'credit_owed'
     end
   end
 end
