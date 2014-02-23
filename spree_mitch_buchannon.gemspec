@@ -9,11 +9,14 @@ Gem::Specification.new do |s|
   s.author    = 'Willian van der Velde'
   s.email     = 'willian@reinaris.nl'
   s.homepage  = 'https://github.com/Willianvdv'
-  
+
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  s.add_dependency 'spree_core', '~> 2.1'
+  # spree_version = '~> 2.2.0'
+  # s.add_dependency 'spree_api', spree_version
+  # s.add_dependency 'spree_backend', spree_version
+  # s.add_dependency 'spree_core', spree_version
 
   s.add_development_dependency 'capybara', '~> 2.1'
   s.add_development_dependency 'database_cleaner'
