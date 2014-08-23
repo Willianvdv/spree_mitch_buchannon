@@ -1,17 +1,31 @@
 Spree::Order.class_eval do
   def self.payment_reminder_candidates
-    self.complete
-      .select('(select count(*) from spree_orders as SO ' +
-              'where SO.user_id == spree_orders.user_id and '+
-              'SO.id != spree_orders.id and ' +
-              'SO.completed_at > spree_orders.completed_at) as future_orders, ' +
-              '*')
-      .where('payment_reminder_sent_at is null')
-      .where(completed_at: 1.days.ago..1.hour.ago)
-      .where('future_orders == 0')
+
+    # Gives a set with orders where the user has not placed any new orders
+    orders = \
+      self.complete
+          .select(
+            '(select count(*) from spree_orders as SO ' +
+            'where SO.user_id == spree_orders.user_id and '+
+            'SO.id != spree_orders.id and ' +
+            'SO.completed_at > spree_orders.completed_at) as future_orders, ' +
+            '*')
+          .where('payment_reminder_sent_at is null')
+          .where('future_orders == 0')
+          .to_a
+
+    # The reminder threshold is dynamic. Doing it in a query would be super complex (I think)
+    orders = orders.keep_if do |order|
+      reminder_threshold = order.payments.last.try(:reminder_threshold) || 1
+
+      order.completed_at > (reminder_threshold + 24).hour.ago &&
+      order.completed_at < (reminder_threshold).hour.ago
+    end
+
+    orders
   end
 
-  def self.cancellation_candidates 
+  def self.cancellation_candidates
     self.complete
       .where("payment_state != 'paid'")
       .where("completed_at < ?", 2.days.ago)

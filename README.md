@@ -1,10 +1,6 @@
-# Spree Mitch Buchannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_buchannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_buchannon)[![Coverage Status](https://coveralls.io/repos/Willianvdv/spree_mitch_buchannon/badge.png?branch=master)](https://coveralls.io/r/Willianvdv/spree_mitch_buchannon?branch=master)
+# Spree Mitch Buchannon [![Build Status](https://travis-ci.org/Willianvdv/spree_mitch_buchannon.png?branch=master)](https://travis-ci.org/Willianvdv/spree_mitch_buchannon) [![Coverage Status](https://coveralls.io/repos/Willianvdv/spree_mitch_buchannon/badge.png?branch=master)](https://coveralls.io/r/Willianvdv/spree_mitch_buchannon?branch=master)
 
 The Spree Mitch Buchannon modules saves orders. It's looking for unpaid orders and rescues them by sending a payment reminder to the customer. It also keeps the ~~sea~~ backend clean by canceling unpaid orders after x days.
-
-## Compatiblity
-
-I've created this gem for a Spree 1.2.4 store. But I will add support for 2.x stores soon!
 
 ## Installation
 
@@ -58,9 +54,6 @@ I recommend using [whenever](https://github.com/javan/whenever). Follow their in
 ```
 every :hour do
   rake "mitch:send_reminder_emails"
-end
-
-every :hour do
   rake "mitch:cancel_unpaid_orders"
 end
 ```

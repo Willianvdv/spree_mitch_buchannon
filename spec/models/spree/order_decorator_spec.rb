@@ -10,6 +10,11 @@ describe Spree::Order do
   }
 
   let(:order) { create :completed_order_with_totals }
+  let(:payment) { create :payment, order: order }
+
+  before do
+    order.payments << payment
+  end
 
   describe '.after_cancel' do
     context 'new order' do
@@ -23,7 +28,7 @@ describe Spree::Order do
         order.cancel!
       end
     end
-    
+
     context '6 weeks old order' do
       before :each do
         order.completed_at = 6.weeks.ago
@@ -39,7 +44,7 @@ describe Spree::Order do
 
   describe '.send_payment_reminder_emails_to_unpaid_orders' do
     let!(:order) { create :order }
-  
+
     before :each do
       Spree::Order.stub(:payment_reminder_candidates).and_return [order,]
       order.stub(:send_payment_reminder_email)
@@ -57,25 +62,25 @@ describe Spree::Order do
     end
 
     it 'updates the payment reminder sent at' do
-      order.send_payment_reminder_email 
+      order.send_payment_reminder_email
       expect(order.payment_reminder_sent_at).not_to be_nil
     end
 
     it 'sends the payment reminder email' do
       mail_message.should_receive(:deliver!).once
-      order.send_payment_reminder_email 
+      order.send_payment_reminder_email
     end
   end
 
   describe '#cancellation_candidates' do
     let!(:completed_paid_order) {
-      order = create :completed_order_with_totals        
+      order = create :completed_order_with_totals
       order.completed_at = 3.days.ago
       order.payment_state = 'paid'
       order.save!
       order
     }
-    
+
     let!(:completed_order) {
       order = create :completed_order_with_totals
       order.completed_at = 3.days.ago
@@ -129,7 +134,7 @@ describe Spree::Order do
         payment = create :payment
         @paid_order = payment.order
       end
-      
+
       it 'should return the completed order' do
         expect(subject).to eq([@completed_order])
       end
@@ -194,5 +199,5 @@ describe Spree::Order do
         expect(subject).to eq([])
       end
     end
-  end  
+  end
 end
