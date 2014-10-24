@@ -14,6 +14,10 @@ describe Spree::Order do
 
   before do
     order.payments << payment
+    order.save!
+    payment_method = payment.payment_method
+    payment_method.reminder_threshold = 1
+    payment_method.save!
   end
 
   describe '.after_cancel' do
@@ -126,25 +130,26 @@ describe Spree::Order do
     subject { Spree::Order.payment_reminder_candidates }
 
     describe 'with no reminders sent' do
-      before :each do
-        @completed_order = create :completed_order_with_totals
-        @completed_order.completed_at = 1.hour.ago
-        @completed_order.save!
-        @uncompleted_order = create :order
-        payment = create :payment
-        @paid_order = payment.order
+      let!(:completed_order) do
+        completed_order = create :completed_order_with_totals
+        completed_order.completed_at = 6.hour.ago
+        completed_order.save!
+        completed_order
       end
 
+      let!(:uncompleted_order) { create :order, completed_at: nil }
+
       it 'should return the completed order' do
-        expect(subject).to eq([@completed_order])
+        expect(subject).to eq [completed_order]
       end
 
       it 'should not return uncompleted orders' do
-        expect(subject).not_to include(@uncompleted_order)
+        expect(subject).not_to include(uncompleted_order)
       end
 
-      it 'should not return unpaid orders' do
-        expect(subject).not_to include(@paid_order)
+      it 'should not return paid orders' do
+        paid_order = create(:payment).order
+        expect(subject).not_to include(paid_order)
       end
 
       # todo: Think of a nicer way to do these tests. I want
@@ -152,8 +157,8 @@ describe Spree::Order do
       # that are older than 1 hour and younger than 1 day
       describe 'a order completed a second ago' do
         before :each do
-          @completed_order.completed_at = 1.second.ago
-          @completed_order.save!
+          completed_order.completed_at = 1.second.ago
+          completed_order.save!
         end
 
         it 'should not be a reminder candiate' do
@@ -162,24 +167,21 @@ describe Spree::Order do
       end
 
       describe 'a order completed 7 days ago' do
-        before :each do
-          @completed_order.completed_at = 7.days.ago
-          @completed_order.save!
-        end
-
         it 'should not be a reminder candiate' do
+          completed_order.update_attributes completed_at: 7.days.ago
+
           expect(subject).to eq([])
         end
       end
 
       describe 'user placed another order' do
         before :each do
-          @new_order = create :order, user: order.user
-          @new_order.completed_at = 2.minutes.ago
-          @new_order.save
+          new_order = create :order, user: order.user
+          new_order.completed_at = 2.minutes.ago
+          new_order.save
 
-          @completed_order.completed_at = 7.days.ago
-          @completed_order.save
+          completed_order.completed_at = 7.days.ago
+          completed_order.save
         end
 
         it 'should not send a payment reminder' do
@@ -190,9 +192,9 @@ describe Spree::Order do
 
     describe 'reminder already sent' do
       before :each do
-        @completed_order = create :completed_order_with_totals
-        @completed_order.payment_reminder_sent_at = 1.day.ago
-        @completed_order.save!
+        completed_order = create :completed_order_with_totals
+        completed_order.payment_reminder_sent_at = 1.day.ago
+        completed_order.save!
       end
 
       it 'should not include orders which already been reminded' do

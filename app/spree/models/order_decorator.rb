@@ -1,35 +1,32 @@
 Spree::Order.class_eval do
   def self.payment_reminder_candidates
+    orders = Spree::Order.complete
+              .where("(payment_state is null OR payment_state != 'paid')")
+              .where("(payment_reminder_sent_at is null or payment_reminder_sent_at == '')")
 
-    # Gives a set with orders where the user has not placed any new orders
-    orders = \
-      self.complete
-          .select(
-            '(select count(*) from spree_orders as SO ' +
-            'where SO.user_id == spree_orders.user_id and '+
-            'SO.id != spree_orders.id and ' +
-            'SO.completed_at > spree_orders.completed_at) as future_orders, ' +
-            '*')
-          .where('payment_reminder_sent_at is null')
-          .where('future_orders == 0')
-          .to_a
+    orders.keep_if do |order|
+      future_orders = Spree::Order.where('completed_at > ?', order.completed_at)
+                                  .where(user: order.user)
 
-    # The reminder threshold is dynamic. Doing it in a query would be super complex (I think)
-    orders = orders.keep_if do |order|
-      reminder_threshold = order.payments.last.try(:reminder_threshold) || 1
+      reminder_threshold = (order.payments.last.try(:payment_method).try(:reminder_threshold) || 1).hours.ago
 
-      order.completed_at > (reminder_threshold + 24).hour.ago &&
-      order.completed_at < (reminder_threshold).hour.ago
+      min = reminder_threshold - 1.days
+      max = reminder_threshold
+
+      future_orders.empty? && order.completed_at.between?(min, max)
     end
-
-    orders
   end
 
   def self.cancellation_candidates
-    self.complete
-      .where("payment_state != 'paid'")
-      .where("completed_at < ?", 2.days.ago)
-      .where("state != 'canceled'")
+    cancellation_canditates = complete
+                                .where("payment_state != 'paid'")
+                                .where("state != 'canceled'")
+
+    cancellation_canditates.keep_if do |order|
+      reminder_threshold = ((order.payments.last.try(:payment_method).try(:reminder_threshold) || 1) * 3).hours.ago
+
+      order.completed_at < reminder_threshold
+    end
   end
 
   def send_payment_reminder_email
