@@ -2,11 +2,11 @@ Spree::Order.class_eval do
   def self.payment_reminder_candidates
     orders = Spree::Order.complete
               .where("(payment_state is null OR payment_state != 'paid')")
-              .where("(payment_reminder_sent_at is null or payment_reminder_sent_at == '')")
+              .where("payment_reminder_sent_at is null")
 
     orders.keep_if do |order|
       future_orders = Spree::Order.where('completed_at > ?', order.completed_at)
-                                  .where(user: order.user)
+                                  .where(email: order.email)
 
       reminder_threshold = (order.payments.last.try(:payment_method).try(:reminder_threshold) || 1).hours.ago
 
