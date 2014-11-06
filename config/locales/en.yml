@@ -1,6 +1,7 @@
 en:
-  payment_reminder:
-    payment_reminder_email:
-      subject: Payment reminder
-      dear_customer: Dear Customer,
-      instructions: Your order has been placed but was not paid for. Please pay so we can process your order!
+  spree:
+    payment_reminder:
+      payment_reminder_email:
+        subject: Payment reminder
+        dear_customer: Dear Customer,
+        instructions: Your order has been placed but was not paid for. Please pay so we can process your order!
