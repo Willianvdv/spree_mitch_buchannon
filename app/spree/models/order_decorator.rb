@@ -1,6 +1,7 @@
 Spree::Order.class_eval do
   def self.payment_reminder_candidates
     orders = Spree::Order.complete
+              .where("state != 'canceled'")
               .where("(payment_state is null OR payment_state != 'paid')")
               .where("payment_reminder_sent_at is null")
 
