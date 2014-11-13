@@ -23,7 +23,7 @@ describe Spree::PaymentReminderMailer do
     end
 
     it 'subject contains the payment instructions' do
-      expect(subject.body).to include('Your order has been placed but was not paid for.')
+      expect(subject.body).to include('Instructions')
     end
   end
 end
