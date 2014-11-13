@@ -1,4 +1,33 @@
 Spree::Order.class_eval do
+
+  # Motivational emails
+
+  def self.orders_that_need_motivation
+    # + No future orders
+    # + Must have line items
+    # + Must not be cancelled
+
+    Spree::Order.where("state != 'complete'")
+                .where("email is not null")
+                .where('updated_at < ?', 5.hours.ago)
+                .where('updated_at > ?', 24.hours.ago)
+
+  end
+
+  def self.send_motivation_emails
+    orders_that_need_motivation.each do |order_that_needs_motivation|
+      order_that_needs_motivation.send_motivation_email
+    end
+  end
+
+  def send_motivation_email
+    touch :motivation_sent_at
+    message = Spree::MotivationMailer.motivation_email(self)
+    message.deliver!
+  end
+
+  # Payment reminder emails
+
   def self.payment_reminder_candidates
     orders = Spree::Order.complete
               .where("state != 'canceled'")
@@ -18,6 +47,25 @@ Spree::Order.class_eval do
     end
   end
 
+  def send_payment_reminder_email
+    touch :payment_reminder_sent_at
+    message = Spree::PaymentReminderMailer.payment_reminder_email(self)
+    message.deliver!
+  end
+
+
+  def self.send_payment_reminder_emails_to_unpaid_orders
+    payment_reminder_candidates.each do |payment_reminder_candidate|
+      payment_reminder_candidate.send_payment_reminder_email
+    end
+  end
+
+  def self.send_motivation_email_to_uncompleted_orders
+
+  end
+
+  # Cancellation of old orders
+
   def self.cancellation_candidates
     cancellation_canditates = complete
                                 .where("payment_state != 'paid'")
@@ -30,21 +78,9 @@ Spree::Order.class_eval do
     end
   end
 
-  def send_payment_reminder_email
-    touch(:payment_reminder_sent_at)
-    message = Spree::PaymentReminderMailer.payment_reminder_email(self)
-    message.deliver!
-  end
-
   def self.cancel_cancellation_candidates
     cancellation_candidates.each do |cancellation_candidate|
       cancellation_candidate.cancel!
-    end
-  end
-
-  def self.send_payment_reminder_emails_to_unpaid_orders
-    payment_reminder_candidates.each do |payment_reminder_candidate|
-      payment_reminder_candidate.send_payment_reminder_email
     end
   end
 

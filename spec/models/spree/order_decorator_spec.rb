@@ -20,6 +20,43 @@ describe Spree::Order do
     payment_method.save!
   end
 
+  context 'motivational emails' do
+    let!(:not_completed_order) do
+      o = create :order, email: 'mitch@example.com'
+      o.update_columns updated_at: 7.hours.ago
+      o
+    end
+
+    before do
+      # This has no email address so can't get motivation
+      o = create :order
+      o.update_columns updated_at: 20.hours.ago, email: nil
+
+      # This order is too old get get motivation
+      o = create :order, email: 'mitch@example.com'
+      o.update_columns updated_at: 30.hours.ago
+    end
+
+
+    describe '.orders_that_need_motivation' do
+      subject { described_class.orders_that_need_motivation }
+
+      it 'should have only un-completed orders' do
+        expect(subject).to eq [not_completed_order]
+      end
+    end
+
+    describe '.send_motivation_email' do
+      subject { not_completed_order }
+
+      before { described_class.send_motivation_emails }
+
+      it 'marks the mail as sent' do
+        expect(subject.reload.motivation_sent_at).not_to be_nil
+      end
+    end
+  end
+
   describe '.after_cancel' do
     context 'new order' do
       before :each do
