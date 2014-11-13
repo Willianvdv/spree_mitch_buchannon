@@ -1,17 +1,23 @@
 Spree::Order.class_eval do
 
+  def future_orders?
+    self.class
+      .where('completed_at > ?', completed_at)
+      .where(email: email)
+      .any?
+  end
+
   # Motivational emails
 
   def self.orders_that_need_motivation
-    # + No future orders
-    # + Must have line items
-    # + Must not be cancelled
+    orders = Spree::Order
+      .where("state != 'complete'")
+      .where("state != 'canceled'")
+      .where("email is not null")
+      .where('updated_at < ?', 5.hours.ago)
+      .where('updated_at > ?', 24.hours.ago)
 
-    Spree::Order.where("state != 'complete'")
-                .where("email is not null")
-                .where('updated_at < ?', 5.hours.ago)
-                .where('updated_at > ?', 24.hours.ago)
-
+    orders.keep_if { |order| !order.future_orders? && order.item_total > 0 }
   end
 
   def self.send_motivation_emails
@@ -29,21 +35,19 @@ Spree::Order.class_eval do
   # Payment reminder emails
 
   def self.payment_reminder_candidates
-    orders = Spree::Order.complete
-              .where("state != 'canceled'")
-              .where("(payment_state is null OR payment_state != 'paid')")
-              .where("payment_reminder_sent_at is null")
+    orders = Spree::Order
+      .complete
+      .where("state != 'canceled'")
+      .where("(payment_state is null OR payment_state != 'paid')")
+      .where("payment_reminder_sent_at is null")
 
     orders.keep_if do |order|
-      future_orders = Spree::Order.where('completed_at > ?', order.completed_at)
-                                  .where(email: order.email)
-
       reminder_threshold = (order.payments.last.try(:payment_method).try(:reminder_threshold) || 1).hours.ago
 
       min = reminder_threshold - 1.days
       max = reminder_threshold
 
-      future_orders.empty? && order.completed_at.between?(min, max)
+      !order.future_orders? && order.completed_at.between?(min, max)
     end
   end
 
@@ -58,10 +62,6 @@ Spree::Order.class_eval do
     payment_reminder_candidates.each do |payment_reminder_candidate|
       payment_reminder_candidate.send_payment_reminder_email
     end
-  end
-
-  def self.send_motivation_email_to_uncompleted_orders
-
   end
 
   # Cancellation of old orders

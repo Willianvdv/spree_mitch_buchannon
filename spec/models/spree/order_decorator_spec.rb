@@ -1,13 +1,13 @@
 require 'spec_helper'
-#require 'email_spec'
+# require 'email_spec'
 
 describe Spree::Order do
-  let!(:mail_message) {
-    mail_message = double "Mail::Message"
+  let!(:mail_message) do
+    mail_message = double 'Mail::Message'
     mail_message.stub(:deliver!)
     mail_message.stub(:deliver)
     mail_message
-  }
+  end
 
   let(:order) { create :completed_order_with_totals }
   let(:payment) { create :payment, order: order }
@@ -22,21 +22,20 @@ describe Spree::Order do
 
   context 'motivational emails' do
     let!(:not_completed_order) do
-      o = create :order, email: 'mitch@example.com'
+      o = create :order_with_line_items, email: 'mitch@example.com'
       o.update_columns updated_at: 7.hours.ago
       o
     end
 
     before do
       # This has no email address so can't get motivation
-      o = create :order
+      o = create :completed_order_with_totals
       o.update_columns updated_at: 20.hours.ago, email: nil
 
       # This order is too old get get motivation
-      o = create :order, email: 'mitch@example.com'
+      o = create :completed_order_with_totals, email: 'mitch@example.com'
       o.update_columns updated_at: 30.hours.ago
     end
-
 
     describe '.orders_that_need_motivation' do
       subject { described_class.orders_that_need_motivation }
